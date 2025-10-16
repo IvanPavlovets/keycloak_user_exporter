@@ -1,0 +1,40 @@
+services:
+  postgres:
+    image: postgres:12
+    container_name: Postgres
+    environment:
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=keycloakdb
+    volumes:
+      - ./db/keycloakdb:/var/lib/postgresql/data
+    ports:
+      - "5435:5432"
+    networks:
+      - keycloak-net
+    restart: always
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.2
+    container_name: Keycloak
+    ports:
+      - "9090:8080"
+    environment:
+      DB_VENDOR: POSTGRES
+      DB_ADDR: postgres
+      DB_DATABASE: keycloakdb
+      DB_SCHEMA: public
+      DB_USER: postgres
+      DB_PASSWORD: password
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+    networks:
+      - keycloak-net
+    depends_on:
+      - postgres
+    command:
+      - "start-dev"
+
+networks:
+  keycloak-net:
+    driver: bridge
