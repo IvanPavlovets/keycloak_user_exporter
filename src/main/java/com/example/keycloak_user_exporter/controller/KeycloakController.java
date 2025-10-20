@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/keycloak")
+@RequestMapping("/api/v1/keycloak")
 @RequiredArgsConstructor
 public class KeycloakController {
     private final KeycloakService keycloakService;
@@ -43,7 +43,7 @@ public class KeycloakController {
      * @param token
      * @return
      */
-    @GetMapping("/users/print")
+    @GetMapping(value = "/users/print", produces = "text/plain;charset=UTF-8")
     public ResponseEntity<String> printUsers(@RequestHeader("Authorization") String token) {
         String result = keycloakService.printUsersFormatted(token);
         return ResponseEntity.ok(result);
